@@ -28,7 +28,7 @@ services:
             - .env
         labels:
             - "traefik.http.routers.backend-blue.rule=Host(`blue.docker.localhost`)"
-            - "traefik.http.services.backend-blue.loadbalancer.server.port=80"
+            - "traefik.http.services.backend-blue.loadbalancer.server.port=8080"
         depends_on:
             - mysql
 
@@ -38,7 +38,7 @@ services:
             - .env
         labels:
             - "traefik.http.routers.backend-green.rule=Host(`green.docker.localhost`)"
-            - "traefik.http.services.backend-green.loadbalancer.server.port=80"
+            - "traefik.http.services.backend-green.loadbalancer.server.port=8080"
         depends_on:
             - mysql
 

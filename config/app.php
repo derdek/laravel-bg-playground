@@ -123,5 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'version' => env('APP_VERSION'),
+    'version' => env('LAST_COMMIT_HASH'),
 ];

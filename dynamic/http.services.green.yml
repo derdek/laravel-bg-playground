@@ -3,4 +3,4 @@ http:
     green:
       loadBalancer:
         servers:
-          - url: 'http://backend-green:80/'
+          - url: 'http://backend-green:8080/'

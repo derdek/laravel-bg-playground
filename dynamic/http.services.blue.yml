@@ -3,4 +3,4 @@ http:
     blue:
       loadBalancer:
         servers:
-          - url: 'http://backend-blue:80/'
+          - url: 'http://backend-blue:8080/'
