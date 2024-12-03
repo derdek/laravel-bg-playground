@@ -8,12 +8,8 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "unlink('composer-setup.php');" \
     && mv composer.phar /usr/local/bin/composer
 
-COPY ./docker-configs/frankenphp/frankenphp.conf /etc/frankenphp/frankenphp.conf
-
 COPY . /app
 
 RUN composer install
 
 RUN chown -R www-data:www-data /app
-
-CMD ["frankenphp", "-c", "/etc/frankenphp/frankenphp.conf"]
