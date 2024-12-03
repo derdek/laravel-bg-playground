@@ -1,10 +1,5 @@
 FROM dunglas/frankenphp:php8.3-alpine
 
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    && rm -rf /var/lib/apt/lists/*
-
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN mkdir -p /var/log/frankenphp && chown -R www-data:www-data /var/log/frankenphp
