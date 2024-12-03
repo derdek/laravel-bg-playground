@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+    mysql:
+        image: mysql:8
+        tty: true
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - db_data:/var/lib/mysql/
+
+    traefik:
+        image: traefik:v2.4
+        ports:
+            - "80:80"
+            - "443:443"
+            - "8080:8080"
+        volumes:
+            - ./traefik.yml:/etc/traefik/traefik.yml
+            - ./dynamic:/etc/traefik/dynamic:ro
+
+    backend-blue:
+        build: .
+        env_file:
+            - .env
+        labels:
+            - "traefik.http.routers.backend-blue.rule=Host(`blue.docker.localhost`)"
+            - "traefik.http.services.backend-blue.loadbalancer.server.port=80"
+        depends_on:
+            - mysql
+
+    backend-green:
+        build: .
+        env_file:
+            - .env
+        labels:
+            - "traefik.http.routers.backend-green.rule=Host(`green.docker.localhost`)"
+            - "traefik.http.services.backend-green.loadbalancer.server.port=80"
+        depends_on:
+            - mysql
+
+volumes:
+    db_data:
+        driver: local
