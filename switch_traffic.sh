@@ -25,7 +25,7 @@ fi
 # Функція для перевірки, чи працює сервіс
 check_service() {
   local host=$1
-  local response=$(curl -s -o /dev/null -w "%{http_code}" http://$host/version)
+  local response=$(curl -s -o /dev/null -w "%{http_code}" http://$host/api/version)
   if [ "$response" -eq 200 ]; then
     return 0
   else
