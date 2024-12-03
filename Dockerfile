@@ -4,7 +4,7 @@ RUN mkdir -p /var/log/frankenphp && chown -R www-data:www-data /var/log/frankenp
 
 COPY ./docker-configs/frankenphp/frankenphp.conf /etc/frankenphp/frankenphp.conf
 
-COPY . /var/www/html
+COPY . /app
 
 RUN composer install
 
