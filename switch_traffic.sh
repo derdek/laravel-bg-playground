@@ -59,7 +59,7 @@ for attempt in {1..5}; do
   sleep $attempt
   if check_service $new_host; then
     # Накатуємо міграцію за допомогою Alembic
-    $DOCKER_COMPOSE_CMD run --rm backend-$new_service php artisan migrate
+    $DOCKER_COMPOSE_CMD run --rm backend-$new_service php artisan migrate --force
     # Перевіряємо, чи міграція пройшла успішно
     if [ $? -eq 0 ]; then
       # Переключаємо трафік на новий контейнер
