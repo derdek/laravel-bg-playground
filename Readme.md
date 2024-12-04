@@ -17,9 +17,8 @@ cp .env.example cicd/.env.production
 cp .env.example .env
 ``` 
 5) Додати в інвентар публічкий ключ від ключа, який буде використовуватись для підключення до сервера по ssh.
-Також додати айпі адресу сервера, шлях до приватного ключа, який потрібен для підключення під root-ом
-Наприклад jenkins, щоб автоматично стягувати код з репозиторію.
-У файлі cicd/firststart.sh вказати репозиторій
+Також додати айпі адресу сервера, шлях до приватного ключа, який потрібен для підключення під root-ом, 
+посилання на репозиторій для клонування по ssh.
 
 6) Встановити ansible
 див. https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html
@@ -36,7 +35,7 @@ bash switch_traffic.sh
 
 p.s. Важливо, не видаляти міграції, та не редагувати їх, якщо вона була вже запущена
 
-p.s.2 Важливо вказати хост у dynamic/http.routers.docker-localhost.yml, наприклад schedule.knu.ua
+p.s.2 Важливо вказати хост у dynamic/http.routers.docker-localhost.yml, наприклад example.com
 
 p.s.3 За бажанням налаштувати деплой через jenkins, достатньо підняти докер контейнер будь де, 
 встановити плагін ssh-agent, в налаштуваннях credentials додати ключ, який буде використовуватись для підключення до сервера
@@ -49,7 +48,6 @@ ssh -o StrictHostKeyChecking=no <cicd user>@<ip> "cd www && bash switch_traffic.
 
 
 Скрипти
-1) `cicd/firststart.sh` - цей скрипт перший потрапляє на сервер, він клонує репозиторій та запускає проект
-2) `check_dynamic_main.sh` - цей скрипт перевіряє чи існує файл dynamic/http.routers.docker-localhost.yml, якщо ні, то він його створює
-3) `write_last_commit_hash_to_env.sh` - цей скрипт записує хеш останнього коміту в змінну середовища
-4) `switch_traffic.sh` - цей скрипт переключає трафік на новий контейнер, якщо той успішно запустився і міграція пройшла вдало
+1) `check_dynamic_main.sh` - цей скрипт перевіряє чи існує файл dynamic/http.routers.docker-localhost.yml, якщо ні, то він його створює
+2) `write_last_commit_hash_to_env.sh` - цей скрипт записує хеш останнього коміту в змінну середовища
+3) `switch_traffic.sh` - цей скрипт переключає трафік на новий контейнер, якщо той успішно запустився і міграція пройшла вдало
