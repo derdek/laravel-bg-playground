@@ -96,48 +96,45 @@
         dest: /root/.ssh/id_rsa
         mode: '0600'
 
+    - name: Clone repository
+      git:
+        repo: "{{ git_repo_url }}"
+        dest: /home/{{ cicd_username }}/www
+        accept_hostkey: yes
+        force: yes
+        key_file: /home/{{ cicd_username }}/.ssh/id_rsa
+
     - name: Copy .env to remote server
       copy:
         src: "{{ env_file_path }}"
-        dest: /home/{{ cicd_username }}/.env
+        dest: /home/{{ cicd_username }}/www/.env
         mode: '0644'
         owner: "{{ cicd_username }}"
         group: "{{ cicd_username }}"
 
-    - name: Copy .ssh/config to remote server
-      copy:
-        src: "{{ ssh_config_file_path }}"
-        dest: /root/.ssh/config
-        mode: '0644'
+    - name: Creating dynamic/http.routers.docker-localhost.yml
+      shell:
+        chdir: /home/{{ cicd_username }}/www
+        cmd: bash check_dynamic_main.sh
 
-    - name: Copy .ssh/config to remote server
-      copy:
-        src: "{{ ssh_config_file_path }}"
-        dest: /home/{{ cicd_username }}/.ssh/config
-        mode: '0644'
-        owner: "{{ cicd_username }}"
-        group: "{{ cicd_username }}"
-
-    - name: Copy firststart.sh to remote server
-      copy:
-        src: "{{ firststart_script_path }}"
-        dest: /home/{{ cicd_username }}/firststart.sh
-        mode: '0755'
-        owner: "{{ cicd_username }}"
-        group: "{{ cicd_username }}"
-
-    - name: Run firststart.sh script
-      ansible.builtin.shell:
-        chdir: /home/{{ cicd_username }}/
-        cmd: ./firststart.sh
-        removes: /home/{{ cicd_username }}/firststart.sh
+    - name: WRITING LAST_COMMIT_HASH TO .env FILE ...
+      shell:
+        chdir: /home/{{ cicd_username }}/www
+        cmd: bash write_last_commit_hash_to_env.sh
 
     - name: Set owner of www folder to cicd_username
-      ansible.builtin.shell:
-        cmd: chown -R {{ cicd_username }}:{{ cicd_username }} /home/{{ cicd_username }}/www
+      file:
+        dest: /home/{{ cicd_username }}/www
+        owner: "{{ cicd_username }}"
+        group: "{{ cicd_username }}"
+        recurse: yes
 
-    - name: Run firststart.sh script
-      ansible.builtin.shell:
+    - name: "STARTING CONTAINERS ..."
+      shell:
         chdir: /home/{{ cicd_username }}/www
-        cmd: ./permissions.sh
-        removes: /home/{{ cicd_username }}/www/permissions.sh
+        cmd: docker-compose up -d
+
+    - name: "STARTING MIGRATIONS ..."
+      shell:
+        chdir: /home/{{ cicd_username }}/www
+        cmd: sleep 5 && docker-compose run --rm backend-green php artisan migrate --force
