@@ -58,7 +58,7 @@ fi
 for attempt in {1..5}; do
   sleep $attempt
   if check_service $new_host; then
-    # Накатуємо міграцію за допомогою Alembic
+    # Накатуємо міграції
     $DOCKER_COMPOSE_CMD run --rm backend-$new_service php artisan migrate --force
     # Перевіряємо, чи міграція пройшла успішно
     if [ $? -eq 0 ]; then
@@ -69,7 +69,7 @@ for attempt in {1..5}; do
     else
       echo "Migration failed."
       # Відкатуємо зміни, якщо новий контейнер не працює
-      $DOCKER_COMPOSE_CMD down --no-deps backend-$new_service
+      $DOCKER_COMPOSE_CMD down backend-$new_service
       # Повертаємо трафік на попередній активний сервіс
       sed -i "s/$new_service@file/$current_active/" dynamic/http.routers.docker-localhost.yml
       exit 1
@@ -82,7 +82,7 @@ done
 if [ $attempt -eq 5 ]; then
   echo "All attempts failed. Rolling back..."
   # Відкатуємо зміни, якщо новий контейнер не працює
-  $DOCKER_COMPOSE_CMD down --no-deps backend-$new_service
+  $DOCKER_COMPOSE_CMD down backend-$new_service
   # Повертаємо трафік на попередній активний сервіс
   sed -i "s/$new_service@file/$current_active/" dynamic/http.routers.docker-localhost.yml
   exit 1
