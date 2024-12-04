@@ -90,6 +90,12 @@
         owner: "{{ cicd_username }}"
         group: "{{ cicd_username }}"
 
+    - name: Copy GitHub deploy key to remote server
+      copy:
+        src: "{{ github_deploy_key_path }}"
+        dest: /root/.ssh/id_rsa
+        mode: '0600'
+
     - name: Copy .env to remote server
       copy:
         src: "{{ env_file_path }}"
@@ -97,6 +103,12 @@
         mode: '0644'
         owner: "{{ cicd_username }}"
         group: "{{ cicd_username }}"
+
+    - name: Copy .ssh/config to remote server
+      copy:
+        src: "{{ ssh_config_file_path }}"
+        dest: /root/.ssh/config
+        mode: '0644'
 
     - name: Copy .ssh/config to remote server
       copy:
@@ -115,6 +127,11 @@
         group: "{{ cicd_username }}"
 
     - name: Run firststart.sh script
-      command: /home/{{ cicd_username }}/firststart.sh
-      become: yes
-      become_user: "{{ cicd_username }}"
+      ansible.builtin.shell:
+        chdir: /home/{{ cicd_username }}/
+        cmd: ./firststart.sh
+        removes: /home/{{ cicd_username }}/firststart.sh
+
+    - name: Set owner of www folder to cicd_username
+      ansible.builtin.shell:
+        cmd: chown -R {{ cicd_username }}:{{ cicd_username }} /home/{{ cicd_username }}/www
