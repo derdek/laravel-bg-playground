@@ -29,6 +29,9 @@ services:
         labels:
             - "traefik.http.routers.backend-blue.rule=Host(`blue.docker.localhost`)"
             - "traefik.http.services.backend-blue.loadbalancer.server.port=8080"
+        volumes:
+            - ./laravel-project/storage/app:/app/storage/app
+            - ./laravel-project/storage/logs:/app/storage/logs
         depends_on:
             - mysql
 
@@ -39,6 +42,9 @@ services:
         labels:
             - "traefik.http.routers.backend-green.rule=Host(`green.docker.localhost`)"
             - "traefik.http.services.backend-green.loadbalancer.server.port=8080"
+        volumes:
+            - ./laravel-project/storage/app:/app/storage/app
+            - ./laravel-project/storage/logs:/app/storage/logs
         depends_on:
             - mysql
 
