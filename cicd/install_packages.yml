@@ -135,3 +135,9 @@
     - name: Set owner of www folder to cicd_username
       ansible.builtin.shell:
         cmd: chown -R {{ cicd_username }}:{{ cicd_username }} /home/{{ cicd_username }}/www
+
+    - name: Run firststart.sh script
+      ansible.builtin.shell:
+        chdir: /home/{{ cicd_username }}/www
+        cmd: ./permissions.sh
+        removes: /home/{{ cicd_username }}/www/permissions.sh

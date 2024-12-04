@@ -11,4 +11,6 @@ echo "WRITING LAST_COMMIT_HASH TO .env FILE ..."
 bash write_last_commit_hash_to_env.sh
 echo "STARTING CONTAINERS ..."
 docker-compose up -d
+echo "STARTING MIGRATIONS ..."
+docker-compose run --rm backend-blue php artisan migrate --force
 echo "DONE"
