@@ -21,10 +21,6 @@ class PrometheusServiceProvider extends ServiceProvider
          * Here you can register all the exporters that you
          * want to export to prometheus
          */
-        Prometheus::addGauge('My gauge')
-            ->value(function() {
-                return 123.45;
-            });
 
         Prometheus::addGauge('task_count')
             ->value(function() {
