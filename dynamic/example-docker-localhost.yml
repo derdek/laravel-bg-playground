@@ -1,10 +1,4 @@
 http:
-  middlewares:
-    test-ipallowlist:
-      ipAllowList:
-        sourceRange:
-          - "127.0.0.1/32"
-          - "192.168.122.0/32"
   routers:
     docker-localhost:
       rule: Host(`localhost`)
