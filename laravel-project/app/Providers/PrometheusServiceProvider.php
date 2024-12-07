@@ -26,7 +26,7 @@ class PrometheusServiceProvider extends ServiceProvider
                 return 123.45;
             });
 
-        Prometheus::addGauge('user_count')
+        Prometheus::addGauge('task_count')
             ->value(function() {
                 return Task::count();
             });
