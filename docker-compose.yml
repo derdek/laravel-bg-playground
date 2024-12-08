@@ -66,10 +66,14 @@ services:
         volumes:
             - '/:/host:ro,rslave'
 
-    prometheus:
-        image: prom/prometheus
+    telegraf:
+        image: telegraf:1.32-alpine
+        environment:
+            - INFLUX_TOKEN=${INFLUX_TOKEN}
         volumes:
-            - ./prometheus.yml:/etc/prometheus/prometheus.yml
+            - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+        depends_on:
+            - node_exporter
 
 volumes:
     db_data:
