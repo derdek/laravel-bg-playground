@@ -61,6 +61,7 @@ services:
         image: telegraf:1.32-alpine
         environment:
             - INFLUX_TOKEN=${INFLUX_TOKEN}
+            - TELEGRAF_HOSTNAME=${TELEGRAF_HOSTNAME}
         volumes:
             - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
 
