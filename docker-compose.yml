@@ -64,6 +64,7 @@ services:
             - TELEGRAF_HOSTNAME=${TELEGRAF_HOSTNAME}
         volumes:
             - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+            - /etc/hostname:/etc/hostname:ro
 
 volumes:
     db_data:
