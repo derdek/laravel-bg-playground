@@ -63,8 +63,6 @@ services:
             - INFLUX_TOKEN=${INFLUX_TOKEN}
         volumes:
             - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
-        depends_on:
-            - node_exporter
 
 volumes:
     db_data:
