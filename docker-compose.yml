@@ -63,8 +63,6 @@ services:
         command:
             - '--path.rootfs=/host'
         restart: unless-stopped
-        ports:
-            - 9100:9100
         volumes:
             - '/:/host:ro,rslave'
 
