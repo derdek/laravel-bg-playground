@@ -2,7 +2,7 @@
 
 # Шлях до файлу
 FILE_PATH="dynamic/http.routers.docker-localhost.yml"
-EXAMPLE_FILE_PATH="dynamic/example-docker-localhost.yml"
+EXAMPLE_FILE_PATH="example-docker-localhost.yml"
 
 # Перевірка на існування файлу
 if [ ! -f "$FILE_PATH" ]; then
