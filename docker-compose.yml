@@ -57,15 +57,6 @@ services:
             - /var/lib/docker/:/var/lib/docker:ro
             #- /var/run/docker.sock:/var/run/docker.sock:ro # Add only if you have your containers running on Mac
 
-    node_exporter:
-        image: quay.io/prometheus/node-exporter:latest
-        container_name: node_exporter
-        command:
-            - '--path.rootfs=/host'
-        restart: unless-stopped
-        volumes:
-            - '/:/host:ro,rslave'
-
     telegraf:
         image: telegraf:1.32-alpine
         environment:
