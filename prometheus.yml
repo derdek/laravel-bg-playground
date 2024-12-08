@@ -8,5 +8,5 @@ scrape_configs:
           - "node_exporter:9100"
 
 remote_write:
-  - url: 'http://192.168.122.68:8086'
+  - url: 'http://192.168.122.68:8086/receive'
     name: 'influxdb'
