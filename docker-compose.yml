@@ -57,6 +57,17 @@ services:
             - /var/lib/docker/:/var/lib/docker:ro
             #- /var/run/docker.sock:/var/run/docker.sock:ro # Add only if you have your containers running on Mac
 
+    node_exporter:
+        image: quay.io/prometheus/node-exporter:latest
+        container_name: node_exporter
+        command:
+            - '--path.rootfs=/host'
+        restart: unless-stopped
+        ports:
+            - 9100:9100
+        volumes:
+            - '/:/host:ro,rslave'
+
 volumes:
     db_data:
         driver: local
