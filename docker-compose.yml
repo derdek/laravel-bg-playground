@@ -66,6 +66,11 @@ services:
         volumes:
             - '/:/host:ro,rslave'
 
+    prometheus:
+        image: prom/prometheus
+        volumes:
+            - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
 volumes:
     db_data:
         driver: local
