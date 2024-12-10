@@ -53,7 +53,7 @@ services:
             - INFLUX_TOKEN=${INFLUX_TOKEN}
         volumes:
             - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
-            - /etc/hostname:/etc/hostname:ro
+            - /var/run/docker.sock:/var/run/docker.sock:ro
 
 volumes:
     db_data:
