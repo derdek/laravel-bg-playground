@@ -25,11 +25,11 @@ class DumpJob implements ShouldQueue
     {
         Log::info('JobName: ' . $this->name . ' is started.');
         sleep(30);
-        Log::info('first step is done.');
+        Log::info('first 30s is done.');
         sleep(30);
-        Log::info('second step is done.');
+        Log::info('second 30s is done.');
         sleep(30);
-        Log::info('third step is done.');
+        Log::info('third 30s is done.');
         sleep(30);
         Log::info('JobName: ' . $this->name . ' is done.');
     }
