@@ -62,8 +62,8 @@ services:
         env_file:
             - .env
         volumes:
-            - ./laravel-project/storage/app:/app/storage/app
-            - ./laravel-project/storage/logs:/app/storage/logs
+            - ./laravel-project/storage/app:/var/www/storage/app
+            - ./laravel-project/storage/logs:/var/www/storage/logs
         stop_grace_period: 10m
         depends_on:
             - mysql

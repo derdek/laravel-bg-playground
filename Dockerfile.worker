@@ -1,26 +1,40 @@
-FROM dunglas/frankenphp:php8.3-alpine
+FROM php:8.3-cli
 
-RUN install-php-extensions \
-    pdo_mysql \
-    gd \
-    intl \
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    locales \
     zip \
-    opcache \
-    sockets \
-    pcntl
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl \
+    supervisor
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
-    && php composer-setup.php \
-    && php -r "unlink('composer-setup.php');" \
-    && mv composer.phar /usr/local/bin/composer
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY ./laravel-project/ /app
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql pcntl gd sockets exif
 
-RUN composer install
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN apk add --no-cache supervisor
+# Set working directory
+WORKDIR /var/www
 
-COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./laravel-project/composer.* /var/www/
+
+RUN composer install --no-dev --no-scripts
+
+# Copy existing application directory contents
+COPY ./laravel-project/ /var/www/
+
+# Copy supervisor configuration
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
