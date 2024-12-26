@@ -88,6 +88,11 @@ if [ $attempt -eq 5 ]; then
   exit 1
 fi
 
+echo "Restarting worker service"
+$DOCKER_COMPOSE_CMD up -d worker
+echo "Restarting scheduler service"
+$DOCKER_COMPOSE_CMD up -d scheduler
+
 echo "Cleaning up unused Docker images..."
 docker image prune -f
 
