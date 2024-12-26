@@ -19,4 +19,25 @@ start:
 stop:
 	$(DOCKER_COMPOSE_CMD) down
 
+start-pma:
+	$(DOCKER_COMPOSE_CMD) up -d pma
+
+start-worker:
+	$(DOCKER_COMPOSE_CMD) up -d worker --build
+
+stop-worker:
+	$(DOCKER_COMPOSE_CMD) down worker --timeout 300
+
+spawn-jobs:
+	$(DOCKER_COMPOSE_CMD) exec worker sh -c "php artisan spawn-jobs"
+
+start-scheduler:
+	$(DOCKER_COMPOSE_CMD) up -d scheduler --build
+
+stop-scheduler:
+	$(DOCKER_COMPOSE_CMD) down scheduler
+
+listen-logs:
+	$(DOCKER_COMPOSE_CMD) logs -f
+
 restart: stop start
