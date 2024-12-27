@@ -40,4 +40,11 @@ stop-scheduler:
 listen-logs:
 	$(DOCKER_COMPOSE_CMD) logs -f
 
-restart: stop start
+start-backend-dev:
+	$(DOCKER_COMPOSE_CMD) -f docker-compose-dev.yml up -d
+
+start-migration-dev:
+	$(DOCKER_COMPOSE_CMD) -f docker-compose-dev.yml exec backend sh -c "php artisan migrate"
+
+stop-backend-dev:
+	$(DOCKER_COMPOSE_CMD) -f docker-compose-dev.yml down
