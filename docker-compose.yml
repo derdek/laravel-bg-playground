@@ -58,7 +58,7 @@ services:
     worker:
         build:
             context: .
-            dockerfile: Dockerfile.worker
+            dockerfile: worker.Dockerfile
         env_file:
             - .env
         volumes:
