@@ -21,7 +21,7 @@ services:
             - ./dynamic:/etc/traefik/dynamic:ro
 
     backend-blue:
-        build: .
+        image: derdek/laravel-bg-playground:latest
         env_file:
             - .env
         labels:
@@ -34,7 +34,7 @@ services:
             - mysql
 
     backend-green:
-        build: .
+        image: derdek/laravel-bg-playground:latest
         env_file:
             - .env
         labels:
