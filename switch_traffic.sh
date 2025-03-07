@@ -4,7 +4,7 @@ set -e
 set -u
 set -x
 
-git pull --rebase
+git pull origin master --rebase
 
 # Function to check if a command exists
 command_exists() {
