@@ -1,0 +1,98 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE_NAME = 'derdek/laravel-bg-playground'
+        WORKER_DOCKER_IMAGE_NAME = 'derdek/laravel-bg-playground-worker'
+        DOCKER_TAG = "${new Date().format('yyyy_MM_dd_HH_mm_ss')}"
+        DOCKER_LATEST_TAG = 'latest'
+        SSH_USER = 'cicd'
+        SSH_HOST = '192.168.122.215'
+        SSH_CREDENTIALS_ID = '1ddb68b4-de19-41bd-9645-56cb523826fb'
+        DOCKER_CREDENTIALS_ID = '265a01d7-b417-4457-bded-116b858ae5ce'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/derdek/laravel-bg-playground.git'
+            }
+        }
+
+        stage('Setup Environment') {
+            steps {
+                sh 'cp .env.example .env'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} -t ${DOCKER_IMAGE_NAME}:${DOCKER_LATEST_TAG} ."
+                }
+            }
+        }
+
+        stage('Run Docker Compose') {
+            steps {
+                sh 'docker compose -f docker-compose-jenkins.yml up -d --build'
+            }
+        }
+
+        stage('Wait Before Migrations') {
+            steps {
+                script {
+                    sleep(5)
+                }
+            }
+        }
+
+        stage('Run Migrations') {
+            steps {
+                sh 'docker compose -f docker-compose-jenkins.yml exec app php artisan migrate'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'docker compose -f docker-compose-jenkins.yml exec app php artisan test'
+            }
+        }
+
+        stage('Build Worker Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${WORKER_DOCKER_IMAGE_NAME}:${DOCKER_TAG} -t ${WORKER_DOCKER_IMAGE_NAME}:${DOCKER_LATEST_TAG} -f worker.Dockerfile ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USER} --password-stdin"
+                        sh "docker push ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}"
+                        sh "docker push ${DOCKER_IMAGE_NAME}:${DOCKER_LATEST_TAG}"
+                        sh "docker push ${WORKER_DOCKER_IMAGE_NAME}:${DOCKER_TAG}"
+                        sh "docker push ${WORKER_DOCKER_IMAGE_NAME}:${DOCKER_LATEST_TAG}"
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Server') {
+            steps {
+                sshagent(credentials: [SSH_CREDENTIALS_ID]) {
+                    sh "ssh ${SSH_USER}@${SSH_HOST} \"cd laravel-bg-playground && bash switch_traffic.sh\""
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker compose -f docker-compose-jenkins.yml down'
+        }
+    }
+}
