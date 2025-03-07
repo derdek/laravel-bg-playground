@@ -15,5 +15,6 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && mv composer.phar /usr/local/bin/composer
 
 COPY ./laravel-project/ /app
+COPY .env /app/.env
 
 RUN composer install
