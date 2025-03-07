@@ -93,8 +93,6 @@ services:
         image: phpmyadmin/phpmyadmin
         environment:
             - PMA_HOST=mysql
-            - PMA_USER=${DB_USERNAME}
-            - PMA_PASSWORD=${DB_PASSWORD}
         ports:
             - "8181:80"
         depends_on:
